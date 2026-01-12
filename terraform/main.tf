@@ -11,7 +11,11 @@ terraform {
 
 provider "docker" {}
 
-# Example: demonstrate provisioning concept via Docker provider
-resource "docker_network" "app_net" {
+# Demonstration resources: a network and a volume
+resource "docker_network" "geoint_net" {
   name = var.network_name
+}
+
+resource "docker_volume" "geoint_pgdata" {
+  name = var.pg_volume_name
 }
