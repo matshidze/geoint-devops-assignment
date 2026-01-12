@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: geointdb
+      POSTGRES_USER: geointuser
+      POSTGRES_PASSWORD: geointpass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"   # changed here
+
+  web:
+    build:
+      context: ./app
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: geointdb
+      DB_USER: geointuser
+      DB_PASSWORD: geointpass
+      APP_HOST: 0.0.0.0
+      APP_PORT: 5000
+      FLASK_SECRET_KEY: "change-me"
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    depends_on:
+      - web
+
+volumes:
+  pgdata:

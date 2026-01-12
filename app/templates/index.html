@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>DevOps Assignment</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; max-width: 800px; }
+    form { margin-bottom: 1.5rem; }
+    input[type="text"] { width: 70%; padding: 0.5rem; }
+    button { padding: 0.55rem 1rem; cursor: pointer; }
+    .msg { padding: 0.6rem; margin: 0.6rem 0; border-radius: 6px; }
+    .success { background: #e8fff0; }
+    .error { background: #ffecec; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.5rem; border-bottom: 1px solid #ddd; text-align: left; }
+    small { color: #666; }
+  </style>
+</head>
+<body>
+  <h2>Flask + PostgreSQL + Prometheus</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="msg {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="/submit">
+    <input type="text" name="message" placeholder="Type something..." />
+    <button type="submit">Submit</button>
+  </form>
+
+  <p>
+    <small>
+      Metrics endpoint: <a href="/metrics" target="_blank">/metrics</a>
+    </small>
+  </p>
+
+  <h3>Latest submissions</h3>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Message</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+        <tr>
+          <td>{{ r[0] }}</td>
+          <td>{{ r[1] }}</td>
+          <td>{{ r[2] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
