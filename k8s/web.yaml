@@ -17,7 +17,7 @@ metadata:
   name: geoint-web
   namespace: geoint
 spec:
-  replicas: 2
+  replicas: 4
   selector:
     matchLabels:
       app: geoint-web
