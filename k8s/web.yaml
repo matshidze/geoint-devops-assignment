@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: geoint-web
+  namespace: geoint
+spec:
+  selector:
+    app: geoint-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geoint-web
+  namespace: geoint
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: geoint-web
+  template:
+    metadata:
+      labels:
+        app: geoint-web
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "5000"
+    spec:
+      containers:
+        - name: web
+          image: YOUR_DOCKERHUB_USER/geoint-web:1.0
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: geoint-config
+            - secretRef:
+                name: geoint-secrets
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
